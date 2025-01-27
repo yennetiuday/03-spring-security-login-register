@@ -8,6 +8,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -44,10 +45,11 @@ public class AppSecurityConfig {
 	@Bean
 	@SneakyThrows
 	public SecurityFilterChain security(HttpSecurity http) {
-		http.authorizeHttpRequests(req -> {
-			req.requestMatchers("/register").permitAll()
-			.anyRequest().authenticated();
-		});
-		return http.csrf().disable().build();
+		http
+				.authorizeHttpRequests((req) -> {
+					req.requestMatchers("/register", "/login").permitAll()
+							.anyRequest().authenticated();
+				});
+		return http.csrf(AbstractHttpConfigurer::disable).build();
 	}
 }
